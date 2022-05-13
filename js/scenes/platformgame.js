@@ -27,14 +27,15 @@ class PlatformScene extends Phaser.Scene {
 		this.add.image(400, 300, 'sky');
 		{	// Creem platafomres
 			this.platforms = this.physics.add.staticGroup();
-			this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-			this.platforms.create(600, 400, 'ground');
-			this.platforms.create(50, 250, 'ground');
-			this.platforms.create(750, 220, 'ground');
+			//this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+			//this.platforms.create(600, 400, 'ground');
+			//this.platforms.create(50, 250, 'ground');
+			//this.platforms.create(750, 220, 'ground');
 		}
 		{	// Creem player i definim animacions
-			this.player = this.physics.add.sprite(100, 450, 'dude');
-			this.player.setBounce(0.2);
+			this.player = this.physics.add.sprite(460, 550, 'dude');
+			//this.player.setBounce(0.2);
+			//this.player = this.physics.add.staticGroup();
 			this.player.setCollideWorldBounds(true);
 			
 			this.anims.create({
@@ -87,11 +88,17 @@ class PlatformScene extends Phaser.Scene {
 		if (this.gameOver) return;
 		{ // Moviment
 			if (this.cursors.left.isDown){
-				this.player.setVelocityX(-160);
+				if(this.player.x > 150){
+					this.player.setVelocityX(-160);
+				}
+				else this.player.setVelocityX(0);
 				//this.player.anims.play('left', true);
 			}
 			else if (this.cursors.right.isDown){
-				this.player.setVelocityX(160);
+				if(this.player.x < 660){
+					this.player.setVelocityX(160);
+				}
+				else this.player.setVelocityX(0);
 				//this.player.anims.play('right', true);
 			}
 			else{
@@ -99,8 +106,9 @@ class PlatformScene extends Phaser.Scene {
 				//this.player.anims.play('turn');
 			}
 
-			if (this.cursors.up.isDown && this.player.body.touching.down)
+			if (this.cursors.up.isDown && this.player.body.touching.down){
 				this.player.setVelocityY(-330);
+			}
 		}
 	}
 	collectStar(player, star){
