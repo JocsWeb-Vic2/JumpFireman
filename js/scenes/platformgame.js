@@ -10,6 +10,7 @@ class PlatformScene extends Phaser.Scene {
 		this.score = 0;
 		this.scoreText;
 		this.bombs = null;
+		this.cars = null;
 		this.gameOver = false;
     }
     preload (){	
@@ -17,6 +18,7 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('ground', '../resources/starsassets/platform.png');
 		this.load.image('star', '../resources/starsassets/star.png');
 		this.load.image('bomb', '../resources/starsassets/bomb.png');
+		this.load.image('cotxe1','../resources/starassets/carsito.png');
 		
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
@@ -67,6 +69,8 @@ class PlatformScene extends Phaser.Scene {
 				child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
 		}
 			this.bombs = this.physics.add.group(); // Grup d'enemics
+			this.cars = this.physics.add.group();
+			this.createCar()
 			this.createBomb();
 		{	// Definim les col·lisions i interaccions
 			this.physics.add.collider(this.player, this.platforms);
@@ -118,6 +122,13 @@ class PlatformScene extends Phaser.Scene {
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+	}
+	createCar(){
+		var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+		var cotxe = this.cars.create(x,16,'cotxe1');
+		bomb.setCollideWorldBounds(true);
+		bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
 	}
 	hitBomb(player, bomb){
 		if (this.gameOver) 
