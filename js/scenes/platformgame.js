@@ -50,7 +50,7 @@ class PlatformScene extends Phaser.Scene {
 			//this.createFons();
 		}
 		{	// Creem player i definim animacions
-			this.player = this.physics.add.sprite(460, 550, 'dude');
+			this.player = this.physics.add.sprite(468, 550, 'dude');
 			//this.player.setBounce(0.2);
 			//this.player = this.physics.add.staticGroup();
 			this.player.setCollideWorldBounds(true);
@@ -131,6 +131,7 @@ class PlatformScene extends Phaser.Scene {
 				this.newfons.y = 0;
 			}
 
+
 		}
 	}
 	collectStar(player, star){
@@ -139,7 +140,7 @@ class PlatformScene extends Phaser.Scene {
 		this.scoreText.setText('Score: ' + this.score);
 		if (this.stars.countActive(true) === 0){
 			this.enableAllStars();
-			this.createBomb();
+			//this.createBomb();
 		}
 	}
 	createFons(){
@@ -147,11 +148,31 @@ class PlatformScene extends Phaser.Scene {
 		this.newfons.setVelocityY(300);
 	}
 	createBomb(){
-		var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-        var bomb = this.bombs.create(x, 16, 'bomb');
-        bomb.setBounce(1);
-        bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+		var pos = Phaser.Math.Between(0, 3);
+		var bomb;
+		if(pos < 1){
+			bomb = this.bombs.create(214, 16, 'bomb');
+			bomb.setVelocity(0, 600);
+		}
+		else if(pos < 2){
+			bomb = this.bombs.create(341, 16, 'bomb');
+			bomb.setVelocity(0, 600);
+		}
+		else if(pos < 3){
+			bomb = this.bombs.create(468, 16, 'bomb');
+			bomb.setVelocity(0, 300);
+		}
+		else{
+			bomb = this.bombs.create(596, 16, 'bomb');
+			bomb.setVelocity(0, 300);
+		}
+
+
+		//var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        //var bomb = this.bombs.create(x, 16, 'bomb');
+        //bomb.setBounce(1);
+        //bomb.setCollideWorldBounds(true);
+		setTimeout(()=>this.createBomb(), 1000);
 	}
 	hitBomb(player, bomb){
 		if (this.gameOver) 
