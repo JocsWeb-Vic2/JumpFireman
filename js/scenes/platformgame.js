@@ -13,7 +13,11 @@ class PlatformScene extends Phaser.Scene {
 		this.stars = null;
 		this.score = 0;
 		this.scoreText;
+
 		this.bombs = null;
+		this.balles = null;
+		this.bassals = null;
+
 		this.gameOver = false;
     }
     preload (){	
@@ -21,7 +25,9 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('ground', '../resources/starsassets/platform.png');
 		this.load.image('star', '../resources/starsassets/star.png');
 		this.load.image('bomb', '../resources/starsassets/bomb.png');
-		this.load.image('fons', '../resources/starsassets/carretera2.png')
+		this.load.image('fons', '../resources/starsassets/carretera2.png');
+		this.load.image('balla', '../resources/starsassets/balla.png');
+		this.load.image('bassal', '../resources/starsassets/bassal.png');
 		
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
@@ -84,6 +90,12 @@ class PlatformScene extends Phaser.Scene {
 			this.stars.children.iterate((child) => 
 				child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
 		}
+		{
+			this.balles = this.physics.add.group();
+			this.createBalla();
+			this.bassals = this.physics.add.group();
+			setTimeout(()=>this.createBassal(), 5000);
+		}
 			this.bombs = this.physics.add.group(); // Grup d'enemics
 			this.createBomb();
 		{	// Definim les col·lisions i interaccions
@@ -95,6 +107,15 @@ class PlatformScene extends Phaser.Scene {
 			this.physics.add.collider(this.bombs, this.platforms);
 			this.physics.add.collider(this.player, this.bombs, 
 				(body1, body2)=>this.hitBomb(body1, body2));
+			//JUGADOR AMB BALLES
+			this.physics.add.collider(this.player, this.balles, 
+				(body1, body2)=>this.hitBomb(body1, body2));
+			//BOMBES(cotxes) AMB BALLES
+			this.physics.add.collider(this.bombs, this.balles, 
+				(body1, body2)=>this.hitBallaBomb(body1, body2));
+			//JUGADOR AMB BASSALS
+			this.physics.add.collider(this.player, this.bassals, 
+				(body1, body2)=>this.hitJugBassal(body1, body2));
 		}
 		{ // UI
 			this.scoreText = this.add.text(16, 16, 'Score: 0', 
@@ -130,8 +151,6 @@ class PlatformScene extends Phaser.Scene {
 			if(this.newfons.y == 650){
 				this.newfons.y = 0;
 			}
-
-
 		}
 	}
 	collectStar(player, star){
@@ -147,24 +166,44 @@ class PlatformScene extends Phaser.Scene {
 		this.newfons = this.fons.create(400, -400, 'fons');
 		this.newfons.setVelocityY(300);
 	}
+	createBalla(){
+		var pos = Phaser.Math.Between(0, 3);
+		var balla;
+		var posX = 596;
+		if(pos < 1) posX = 214;
+		else if(pos < 2) posX = 341;
+		else if(pos < 3) posX = 468;
+
+		balla = this.balles.create(posX, 0, 'balla').setScale(.65).refreshBody();
+		balla.setVelocity(0, 300);
+		setTimeout(()=>this.createBalla(), 10000);
+	}
+	createBassal(){
+		var posX = Phaser.Math.Between(214, 596);
+		var bassal;
+
+		bassal = this.bassals.create(posX, 0, 'bassal').setScale(.2).refreshBody();
+		bassal.setVelocity(0, 300);
+		setTimeout(()=>this.createBassal(), 10000);
+	}
 	createBomb(){
 		var pos = Phaser.Math.Between(0, 3);
 		var bomb;
 		if(pos < 1){
-			bomb = this.bombs.create(214, 16, 'bomb');
+			bomb = this.bombs.create(214, 0, 'bomb');
 			bomb.setVelocity(0, 600);
 		}
 		else if(pos < 2){
-			bomb = this.bombs.create(341, 16, 'bomb');
+			bomb = this.bombs.create(341, 0, 'bomb');
 			bomb.setVelocity(0, 600);
 		}
 		else if(pos < 3){
-			bomb = this.bombs.create(468, 16, 'bomb');
-			bomb.setVelocity(0, 300);
+			bomb = this.bombs.create(468, 0, 'bomb');
+			bomb.setVelocity(0, 200);
 		}
 		else{
-			bomb = this.bombs.create(596, 16, 'bomb');
-			bomb.setVelocity(0, 300);
+			bomb = this.bombs.create(596, 0, 'bomb');
+			bomb.setVelocity(0, 200);
 		}
 
 
@@ -182,6 +221,18 @@ class PlatformScene extends Phaser.Scene {
 		//this.player.anims.play('turn');
 		this.gameOver = true;
 		setTimeout(()=>loadpage("../"), 3000);
+	}
+	hitBallaBomb(balla, bomb){
+		balla.setVelocityY(300);
+		bomb.setVelocityY(300);
+	}
+	hitJugBassal(player, bassal){
+		player.setVelocityY(400);
+		setTimeout(()=>this.restablirVel(), 2000);
+		bassal.disableBody(true, true);
+	}
+	restablirVel(){
+		this.player.setVelocityY(300);
 	}
 	enableAllStars(){
 		this.stars.children.iterate(child => 
