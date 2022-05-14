@@ -17,6 +17,7 @@ class PlatformScene extends Phaser.Scene {
 		this.bombs = null;
 		this.balles = null;
 		this.bassals = null;
+		this.lliscar = false;
 
 		this.gameOver = false;
     }
@@ -92,7 +93,7 @@ class PlatformScene extends Phaser.Scene {
 		}
 		{
 			this.balles = this.physics.add.group();
-			this.createBalla();
+			setTimeout(()=>this.createBassal(), 10000);
 			this.bassals = this.physics.add.group();
 			setTimeout(()=>this.createBassal(), 5000);
 		}
@@ -144,10 +145,16 @@ class PlatformScene extends Phaser.Scene {
 				//this.player.anims.play('turn');
 			}
 
-			if (this.cursors.up.isDown && this.player.body.touching.down){
-				this.player.setVelocityY(-330);
-			}
+			if (this.cursors.up.isDown && this.lliscar == false){
 
+				this.player.setVelocityY(-160);
+			}
+			else if (this.cursors.down.isDown){
+				this.player.setVelocityY(160);
+			}
+			else if(this.lliscar == false){
+				this.player.setVelocityY(0);
+			}
 			if(this.newfons.y == 650){
 				this.newfons.y = 0;
 			}
@@ -227,11 +234,13 @@ class PlatformScene extends Phaser.Scene {
 		bomb.setVelocityY(300);
 	}
 	hitJugBassal(player, bassal){
-		player.setVelocityY(400);
+		this.lliscar = true;
+		player.setVelocityY(160);
 		setTimeout(()=>this.restablirVel(), 2000);
 		bassal.disableBody(true, true);
 	}
 	restablirVel(){
+		this.lliscar = false;
 		this.player.setVelocityY(300);
 	}
 	enableAllStars(){
