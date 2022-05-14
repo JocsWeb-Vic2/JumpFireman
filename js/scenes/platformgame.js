@@ -5,6 +5,10 @@ class PlatformScene extends Phaser.Scene {
         super('PlatformScene');
 		this.platforms = null;
 		this.player = null;
+
+		this.fons = null;
+		this.newfons = null;
+
 		this.cursors = null;
 		this.stars = null;
 		this.score = 0;
@@ -13,24 +17,37 @@ class PlatformScene extends Phaser.Scene {
 		this.gameOver = false;
     }
     preload (){	
-		this.load.image('sky', '../resources/starsassets/carretera.png');
+		//this.load.image('sky', '../resources/starsassets/carretera.png');
 		this.load.image('ground', '../resources/starsassets/platform.png');
 		this.load.image('star', '../resources/starsassets/star.png');
 		this.load.image('bomb', '../resources/starsassets/bomb.png');
+		this.load.image('fons', '../resources/starsassets/carretera2.png')
 		
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
 			{ frameWidth: 77, frameHeight: 175 }
 		);
+
+		//this.load.spritesheet('fons',
+		//	'../resources/starsassets/fons.png',
+		//	{ frameWidth: 1033, frameHeight: 821 }
+		//);
 	}
     create (){	
-		this.add.image(400, 300, 'sky');
+		//this.add.image(400, 300, 'sky');
+		//this.add.image(400, 300, 'fons');
 		{	// Creem platafomres
 			this.platforms = this.physics.add.staticGroup();
 			//this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 			//this.platforms.create(600, 400, 'ground');
 			//this.platforms.create(50, 250, 'ground');
 			//this.platforms.create(750, 220, 'ground');
+		}
+		{
+			this.fons = this.physics.add.group();
+			this.newfons = this.fons.create(400, 250, 'fons');
+			this.newfons.setVelocityY(300);
+			//this.createFons();
 		}
 		{	// Creem player i definim animacions
 			this.player = this.physics.add.sprite(460, 550, 'dude');
@@ -109,6 +126,11 @@ class PlatformScene extends Phaser.Scene {
 			if (this.cursors.up.isDown && this.player.body.touching.down){
 				this.player.setVelocityY(-330);
 			}
+
+			if(this.newfons.y == 650){
+				this.newfons.y = 0;
+			}
+
 		}
 	}
 	collectStar(player, star){
@@ -119,6 +141,10 @@ class PlatformScene extends Phaser.Scene {
 			this.enableAllStars();
 			this.createBomb();
 		}
+	}
+	createFons(){
+		this.newfons = this.fons.create(400, -400, 'fons');
+		this.newfons.setVelocityY(300);
 	}
 	createBomb(){
 		var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
