@@ -11,13 +11,16 @@ class PlatformScene extends Phaser.Scene {
 
 		this.cursors = null;
 		this.stars = null;
-		this.score = 0;
+		this.score = 100;
 		this.scoreText;
+		this.gasolines = null;
+		this.comptador = 1;
 
 		this.bombs = null;
 		this.balles = null;
 		this.bassals = null;
 		this.lliscar = false;
+
 
 		this.gameOver = false;
     }
@@ -29,6 +32,7 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('fons', '../resources/starsassets/carretera2.png');
 		this.load.image('balla', '../resources/starsassets/balla.png');
 		this.load.image('bassal', '../resources/starsassets/bassal.png');
+		this.load.image('gasolina', '../resources/starsassets/gas.png');
 		
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
@@ -83,28 +87,33 @@ class PlatformScene extends Phaser.Scene {
 			});
 		}
 		{	// Creem objectes interactuables
-			this.stars = this.physics.add.group({
-				key: 'star',
-				repeat: 11,
-				setXY: { x: 12, y: 0, stepX: 70 }
-			});
-			this.stars.children.iterate((child) => 
-				child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
+			//this.stars = this.physics.add.group({
+			//	key: 'star',
+			//	repeat: 11,
+			//	setXY: { x: 12, y: 0, stepX: 70 }
+			//});
+			//this.stars.children.iterate((child) => 
+			//	child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
 		}
 		{
 			this.balles = this.physics.add.group();
-			setTimeout(()=>this.createBassal(), 10000);
+			setTimeout(()=>this.createBalla(), 10000);
 			this.bassals = this.physics.add.group();
-			setTimeout(()=>this.createBassal(), 5000);
+			setTimeout(()=>this.createBassal(), 6000);
+		}
+		{
+			this.gasolines = this.physics.add.group();
+			setTimeout(()=>this.createGasolina(), 32000);
+			setTimeout(()=>this.reduirGasolina(), 2000);
 		}
 			this.bombs = this.physics.add.group(); // Grup d'enemics
-			this.createBomb();
+			setTimeout(()=>this.createBomb(), 1000);
 		{	// Definim les col·lisions i interaccions
 			this.physics.add.collider(this.player, this.platforms);
-			this.physics.add.collider(this.stars, this.platforms);
+			//this.physics.add.collider(this.stars, this.platforms);
 			this.cursors = this.input.keyboard.createCursorKeys();
-			this.physics.add.overlap(this.player, this.stars, 
-				(body1, body2)=>this.collectStar(body1, body2));
+			this.physics.add.overlap(this.player, this.gasolines, 
+				(body1, body2)=>this.collectGasolina(body1, body2));
 			this.physics.add.collider(this.bombs, this.platforms);
 			this.physics.add.collider(this.player, this.bombs, 
 				(body1, body2)=>this.hitBomb(body1, body2));
@@ -119,7 +128,7 @@ class PlatformScene extends Phaser.Scene {
 				(body1, body2)=>this.hitJugBassal(body1, body2));
 		}
 		{ // UI
-			this.scoreText = this.add.text(16, 16, 'Score: 0', 
+			this.scoreText = this.add.text(16, 16, 'Gasolina: 100', 
 				{ fontSize: '32px', fill: '#000' });
 		}
 	}
@@ -160,13 +169,21 @@ class PlatformScene extends Phaser.Scene {
 			}
 		}
 	}
-	collectStar(player, star){
-		star.disableBody(true, true);
-		this.score += 10;
-		this.scoreText.setText('Score: ' + this.score);
-		if (this.stars.countActive(true) === 0){
-			this.enableAllStars();
-			//this.createBomb();
+	collectGasolina(player, gasolina){
+		gasolina.disableBody(true, true);
+		this.score = 100;
+		this.comptador -= 0.1;
+		this.scoreText.setText('Gasolina: ' + this.score);
+	}
+	reduirGasolina(){
+		if (this.gameOver) return;
+		if(this.score > 0){
+			this.score -= 1;
+			setTimeout(()=>this.reduirGasolina(), 800*this.comptador);
+			this.scoreText.setText('Gasolina: ' + this.score);
+		}
+		else{
+			this.hitBomb(null, null);
 		}
 	}
 	createFons(){
@@ -193,6 +210,14 @@ class PlatformScene extends Phaser.Scene {
 		bassal.setVelocity(0, 300);
 		setTimeout(()=>this.createBassal(), 10000);
 	}
+	createGasolina(){
+		var posX = Phaser.Math.Between(214, 596);
+		var gasolina;
+
+		gasolina = this.gasolines.create(posX, 0, 'gasolina').setScale(.08).refreshBody();
+		gasolina.setVelocity(0, 300);
+		setTimeout(()=>this.createGasolina(), 30000);
+	}
 	createBomb(){
 		var pos = Phaser.Math.Between(0, 3);
 		var bomb;
@@ -218,7 +243,7 @@ class PlatformScene extends Phaser.Scene {
         //var bomb = this.bombs.create(x, 16, 'bomb');
         //bomb.setBounce(1);
         //bomb.setCollideWorldBounds(true);
-		setTimeout(()=>this.createBomb(), 1000);
+		setTimeout(()=>this.createBomb(), 2000);
 	}
 	hitBomb(player, bomb){
 		if (this.gameOver) 
