@@ -13,16 +13,16 @@ class PlatformScene extends Phaser.Scene {
 		this.stars = null;
 		this.score = 100;
 		this.scoreText;
-		this.gasolines = null;
 		this.kilometres = 0;
 		this.kilometresText;
 		this.comptador = 1;
 
+		this.gasolines = null;
 		this.cotxes = null;
 		this.balles = null;
 		this.bassals = null;
+		this.edificis = null;
 		this.lliscar = false;
-
 
 		this.gameOver = false;
     }
@@ -35,6 +35,7 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('balla', '../resources/starsassets/balla.png');
 		this.load.image('bassal', '../resources/starsassets/bassal.png');
 		this.load.image('gasolina', '../resources/starsassets/gas.png');
+		this.load.image('edifici', '../resources/starsassets/edifici.png');
 
 		//Load totes les imatges de cada cotxe
 		this.load.image('cotxe1', '../resources/starsassets/cotxe1.png');
@@ -92,6 +93,11 @@ class PlatformScene extends Phaser.Scene {
 			setTimeout(()=>this.createGasolina(), 32000);
 			setTimeout(()=>this.reduirGasolina(), 2000);
 		}
+		{
+			this.edificis = this.physics.add.group();
+			setTimeout(()=>this.createEdifici(), 63000);
+
+		}
 			this.cotxes = this.physics.add.group(); // Grup d'enemics
 			setTimeout(()=>this.createCotxe(), 1000);
 		{	// Definim les col·lisions i interaccions
@@ -115,6 +121,9 @@ class PlatformScene extends Phaser.Scene {
 			//BASSALS AMB COTXES
 			this.physics.add.collider(this.cotxes, this.bassals, 
 				(body1, body2)=>this.hitCotxeBassal(body1, body2));
+			//PLAYER AMB EDIFICIS
+			this.physics.add.collider(this.player, this.edificis, 
+				(body1, body2)=>this.hitEdifici(body1, body2));
 		}
 		{ // UI
 			this.scoreText = this.add.text(16, 16, 'Gasolina: 100', 
@@ -280,8 +289,25 @@ class PlatformScene extends Phaser.Scene {
 	afegirKilometres(){
 		if(this.gameOver) return;
 		this.kilometres += 1;
-		setTimeout(()=>this.afegirKilometres(), 50);
-		this.kilometresText.setText('Metres: ' + this.kilometres);
+		//else {
+			setTimeout(()=>this.afegirKilometres(), 50);
+			this.kilometresText.setText('Metres: ' + this.kilometres);
+		//}
+	}
+	createEdifici(){
+		var pos = Phaser.Math.Between(0, 3);
+		var edifici;
+		var posX = 596;
+		if(pos < 1) posX = 214;
+		else if(pos < 2) posX = 341;
+		else if(pos < 3) posX = 468;
+
+		edifici = this.edificis.create(posX, 0, 'edifici').setScale(.65).refreshBody();
+		edifici.setVelocity(0, 300);
+		setTimeout(()=>this.createEdifici(), 60000);
+	}
+	hitEdifici(player, edifici){
+		edifici.disableBody(true, true);
 	}
 }
 
