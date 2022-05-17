@@ -308,7 +308,12 @@ class PlatformScene extends Phaser.Scene {
 	}
 	hitEdifici(player, edifici){
 		edifici.disableBody(true, true);
+		let joc = {
+			gasolina = this.score,
+			km = this.kilometres
+		          };
 		loadpage("../html/platform2.html");
 	}
+	
 }
 
