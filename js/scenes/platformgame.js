@@ -1,6 +1,7 @@
 "use strict";
 
 
+var pausat = -1;
 
 class PlatformScene extends Phaser.Scene {
     constructor (){
@@ -19,7 +20,7 @@ class PlatformScene extends Phaser.Scene {
 		this.kilometres = 0;
 		this.kilometresText;
 		this.comptador = 1;
-		this.pausat = false;
+		this.es_pot_crear = true;
 
 
 		this.bombs = null;
@@ -86,7 +87,7 @@ class PlatformScene extends Phaser.Scene {
 				.setStyle({ backgroundColor: '#111' })
 				.setInteractive({ useHandCursor: true })
 				.on('pointerdown', ()=>{
-					this.pausat = true;
+					pausat = 0;
 				});
 
 			this.anims.create({
@@ -194,14 +195,16 @@ class PlatformScene extends Phaser.Scene {
 			if(this.newfons.y == 650){
 				this.newfons.y = 0;
 			}
-			if(this.pausat === true){
+			if(pausat === 0){
 				this.scene.pause();
 				this.scene.launch('escena_pausa');
-				this.pausat = false;
+				
 			}
+			
 		}
 	}
 	collectGasolina(player, gasolina){
+
 		gasolina.disableBody(true, true);
 		this.score = 100;
 		this.comptador -= 0.1;
@@ -209,6 +212,7 @@ class PlatformScene extends Phaser.Scene {
 	}
 	reduirGasolina(){
 		if (this.gameOver) return;
+	  if(pausat === -1){	
 		if(this.score > 0){
 			this.score -= 1;
 			setTimeout(()=>this.reduirGasolina(), 800*this.comptador);
@@ -217,12 +221,14 @@ class PlatformScene extends Phaser.Scene {
 		else{
 			this.hitBomb(null, null);
 		}
+	  }
 	}
 	createFons(){
 		this.newfons = this.fons.create(400, -400, 'fons');
 		this.newfons.setVelocityY(300);
 	}
-	createBalla(){
+	createBalla(){	   	
+	  if(pausat === -1){	
 		var pos = Phaser.Math.Between(0, 3);
 		var balla;
 		var posX = 596;
@@ -233,24 +239,30 @@ class PlatformScene extends Phaser.Scene {
 		balla = this.balles.create(posX, 0, 'balla').setScale(.65).refreshBody();
 		balla.setVelocity(0, 300);
 		setTimeout(()=>this.createBalla(), 10000);
+	  }
 	}
 	createBassal(){
+	  if(pausat === -1){
 		var posX = Phaser.Math.Between(214, 596);
 		var bassal;
 
 		bassal = this.bassals.create(posX, 0, 'bassal').setScale(.2).refreshBody();
 		bassal.setVelocity(0, 300);
 		setTimeout(()=>this.createBassal(), 10000);
+	  }
 	}
 	createGasolina(){
+	  if(pausat === -1){
 		var posX = Phaser.Math.Between(214, 596);
 		var gasolina;
 
 		gasolina = this.gasolines.create(posX, 0, 'gasolina').setScale(.08).refreshBody();
 		gasolina.setVelocity(0, 300);
 		setTimeout(()=>this.createGasolina(), 30000);
+	  }
 	}
 	createBomb(){
+	  if(pausat === -1){	
 		var pos = Phaser.Math.Between(0, 3);
 		var randomimatge = Phaser.Math.Between(0, 2);
 		var imatge;
@@ -266,7 +278,8 @@ class PlatformScene extends Phaser.Scene {
 			else imatge = 'cotxe6';
 		}
 
-
+	
+ 
 		if(pos < 1){
 			bomb = this.bombs.create(214, 0, imatge).setScale(.4).refreshBody();;
 			bomb.setVelocity(0, 600);
@@ -290,6 +303,7 @@ class PlatformScene extends Phaser.Scene {
         //bomb.setBounce(1);
         //bomb.setCollideWorldBounds(true);
 		setTimeout(()=>this.createBomb(), 2000);
+	  }
 	}
 
 	hitBomb(player, bomb){
@@ -320,11 +334,13 @@ class PlatformScene extends Phaser.Scene {
 			child.enableBody(true, child.x, 0, true, true));
 	}
 	afegirKilometres(){
+	  if(pausat === -1){	
 		if(this.gameOver) return;
 		this.kilometres += 1;
 		setTimeout(()=>this.afegirKilometres(), 50);
 		this.kilometresText.setText('Metres: ' + this.kilometres);
-	}
+	  }
+    }
 }
 
 var escena_pausa = new Phaser.Class({
@@ -340,15 +356,21 @@ var escena_pausa = new Phaser.Class({
 
 	preload: function ()
 	{
-		this.load.image('mitsu', '../resources/starsassets/evo.jpg');
+		this.load.image('mitsu', '../resources/starsassets/click.png');
 	},
 
 	create: function ()
 	{
-		this.fondo = this.add.image(400, 300, 'mitsu').setAlpha(0.5);
+		this.fondo = this.add.image(400, 300, 'mitsu').setAlpha(1);
 
 		this.input.once('pointerdown', function () {
 
+			pausat = -1;
+			var escena_principal = this.scene.get('PlatformScene')
+			escena_principal.reduirGasolina();
+			escena_principal.afegirKilometres();
+			escena_principal.createBomb();
+			escena_principal.createBassal();
 			this.scene.resume('PlatformScene');
 			this.fondo.destroy();
 
