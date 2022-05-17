@@ -14,6 +14,8 @@ class PlatformScene extends Phaser.Scene {
 		this.score = 100;
 		this.scoreText;
 		this.gasolines = null;
+		this.kilometres = 0;
+		this.kilometresText;
 		this.comptador = 1;
 
 		this.bombs = null;
@@ -138,6 +140,10 @@ class PlatformScene extends Phaser.Scene {
 		{ // UI
 			this.scoreText = this.add.text(16, 16, 'Gasolina: 100', 
 				{ fontSize: '32px', fill: '#000' });
+			this.kilometresText = this.add.text(16, 50, 'Metres: 0', 
+				{ fontSize: '32px', fill: '#000' });
+
+			this.afegirKilometres();
 		}
 	}
 	update (){	
@@ -293,6 +299,12 @@ class PlatformScene extends Phaser.Scene {
 	enableAllStars(){
 		this.stars.children.iterate(child => 
 			child.enableBody(true, child.x, 0, true, true));
+	}
+	afegirKilometres(){
+		if(this.gameOver) return;
+		this.kilometres += 1;
+		setTimeout(()=>this.afegirKilometres(), 50);
+		this.kilometresText.setText('Metres: ' + this.kilometres);
 	}
 }
 
