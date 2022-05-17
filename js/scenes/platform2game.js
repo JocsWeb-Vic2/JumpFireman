@@ -4,6 +4,7 @@ class Platform2Scene extends Phaser.Scene {
     constructor (){
         super('PlatformScene');
 		this.platforms = null;
+		this.Levelplatforms = null;
 		this.player = null;
 		this.cursors = null;
 		this.stars = null;
@@ -11,30 +12,40 @@ class Platform2Scene extends Phaser.Scene {
 		this.scoreText;
 		this.bombs = null;
 		this.gameOver = false;
+		this.newfons = null;
     }
     preload (){	
-		this.load.image('sky', '../resources/starsassets/sky.png');
-		this.load.image('ground', '../resources/starsassets/platform.png');
+		this.load.image('sky', '../resources/starsassets/fons.png');
+		this.load.image('ground', '../resources/starsassets/platform2.png');
 		this.load.image('star', '../resources/starsassets/star.png');
 		this.load.image('bomb', '../resources/starsassets/bomb.png');
 		
 		this.load.spritesheet('dude',
-			'../resources/starsassets/dude.png',
-			{ frameWidth: 32, frameHeight: 48 }
+			'../resources/starsassets/dude2.png',
+			{ frameWidth: 32, frameHeight: 32 }
 		);
 	}
     create (){	
-		this.add.image(400, 300, 'sky');
-		{	// Creem platafomress
-			this.platforms = this.physics.add.staticGroup();
-			this.platforms.create(400, 600, 'ground').setScale(0.2, 0.1).refreshBody();
-            this.platforms.create(0, 600, 'ground').setScale(0.2, 0.1).refreshBody();
-            this.platforms.create(200, 600, 'ground').setScale(0.2, 0.1).refreshBody();
-            this.platforms.create(600, 600, 'ground').setScale(0.2, 0.1).refreshBody();
-            this.platforms.create(800, 600, 'ground').setScale(0.2, 0.1).refreshBody();
-		//	this.platforms.create(600, 400, 'ground').setScale(0.1).refreshBody();
-		//	this.platforms.create(50, 250, 'ground').setScale(0.1).refreshBody();
+
 		
+		{	// Creem platafomress
+
+			this.newfons = this.fons.create(450, 290, 'sky');
+			this.newfons.setVelocityY(100);
+
+			this.platforms = this.physics.add.staticGroup();
+            this.platforms.create(0, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+			this.platforms.create(200, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+			this.platforms.create(400, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+			this.platforms.create(600, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+			this.platforms.create(800, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+
+			this.Levelplatforms = this.physics.add.staticGroup();
+			this.Levelplatforms.create(200, 200, 'ground').setScale(0.1, 0.075).refreshBody();
+			this.Levelplatforms.create(400, 300, 'ground').setScale(0.1, 0.075).refreshBody();
+			this.Levelplatforms.create(600, 400, 'ground').setScale(0.1, 0.075).refreshBody();
+			this.Levelplatforms.create(800, 500, 'ground').setScale(0.1, 0.075).refreshBody();
+			
         //this.platforms.create(750, 220, 'ground').setScale(0.1).refreshBody();
 		}
 		{	// Creem player i definim animacions
@@ -44,20 +55,20 @@ class Platform2Scene extends Phaser.Scene {
 			
 			this.anims.create({
 				key: 'left',
-				frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+				frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 1 }),
 				frameRate: 10,
 				repeat: -1
 			});
 
 			this.anims.create({
 				key: 'turn',
-				frames: [ { key: 'dude', frame: 4 } ],
+				frames: [ { key: 'dude', frame: 2 } ],
 				frameRate: 20
 			});
 
 			this.anims.create({
 				key: 'right',
-				frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+				frames: this.anims.generateFrameNumbers('dude', { start: 3, end: 4 }),
 				frameRate: 10,
 				repeat: -1
 			});
@@ -71,15 +82,20 @@ class Platform2Scene extends Phaser.Scene {
 			this.stars.children.iterate((child) => 
 				child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
 		}
+
+
 			this.bombs = this.physics.add.group(); // Grup d'enemics
 			this.createBomb();
 		{	// Definim les col·lisions i interaccions
 			this.physics.add.collider(this.player, this.platforms);
 			this.physics.add.collider(this.stars, this.platforms);
+			this.physics.add.collider(this.player, this.Levelplatforms);
+			this.physics.add.collider(this.stars, this.Levelplatforms);
 			this.cursors = this.input.keyboard.createCursorKeys();
 			this.physics.add.overlap(this.player, this.stars, 
 				(body1, body2)=>this.collectStar(body1, body2));
 			this.physics.add.collider(this.bombs, this.platforms);
+			this.physics.add.collider(this.bombs, this.Levelplatforms);
 			this.physics.add.collider(this.player, this.bombs, 
 				(body1, body2)=>this.hitBomb(body1, body2));
 		}
@@ -104,8 +120,13 @@ class Platform2Scene extends Phaser.Scene {
 				this.player.anims.play('turn');
 			}
 
-			if (this.cursors.up.isDown && this.player.body.touching.down)
+			if (this.cursors.up.isDown && this.player.body.touching.down){
 				this.player.setVelocityY(-330);
+			}
+
+			if(this.newfons.y == 650){
+				this.newfons.y = 0;
+			}
 		}
 	}
 	collectStar(player, star){
@@ -137,5 +158,14 @@ class Platform2Scene extends Phaser.Scene {
 		this.stars.children.iterate(child => 
 			child.enableBody(true, child.x, 0, true, true));
 	}
+
+	createPlatforn(){
+		this.Levelplatforms.create(200, 200, 'ground').setScale(0.1, 0.075).refreshBody();
+		this.Levelplatforms.create(400, 300, 'ground').setScale(0.1, 0.075).refreshBody();
+		this.Levelplatforms.create(600, 400, 'ground').setScale(0.1, 0.075).refreshBody();
+		this.Levelplatforms.create(800, 500, 'ground').setScale(0.1, 0.075).refreshBody();
+
+	}
+
 }
 
