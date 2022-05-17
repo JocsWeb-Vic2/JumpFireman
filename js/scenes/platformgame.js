@@ -33,6 +33,14 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('balla', '../resources/starsassets/balla.png');
 		this.load.image('bassal', '../resources/starsassets/bassal.png');
 		this.load.image('gasolina', '../resources/starsassets/gas.png');
+
+		//Load totes les imatges de cada cotxe
+		this.load.image('cotxe1', '../resources/starsassets/cotxe1.png');
+		this.load.image('cotxe2', '../resources/starsassets/cotxe2.png');
+		this.load.image('cotxe3', '../resources/starsassets/cotxe3.png');
+		this.load.image('cotxe4', '../resources/starsassets/cotxe4.png');
+		this.load.image('cotxe5', '../resources/starsassets/cotxe5.png');
+		this.load.image('cotxe6', '../resources/starsassets/cotxe6.png');
 		
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
@@ -220,21 +228,35 @@ class PlatformScene extends Phaser.Scene {
 	}
 	createBomb(){
 		var pos = Phaser.Math.Between(0, 3);
+		var randomimatge = Phaser.Math.Between(0, 2);
+		var imatge;
 		var bomb;
+		if(pos < 2){
+			if(randomimatge == 0) imatge = 'cotxe1';
+			else if(randomimatge == 1) imatge = 'cotxe2';
+			else imatge = 'cotxe3';
+		}
+		else{
+			if(randomimatge == 0) imatge = 'cotxe4';
+			else if(randomimatge == 1) imatge = 'cotxe5';
+			else imatge = 'cotxe6';
+		}
+
+
 		if(pos < 1){
-			bomb = this.bombs.create(214, 0, 'bomb');
+			bomb = this.bombs.create(214, 0, imatge).setScale(.4).refreshBody();;
 			bomb.setVelocity(0, 600);
 		}
 		else if(pos < 2){
-			bomb = this.bombs.create(341, 0, 'bomb');
+			bomb = this.bombs.create(341, 0, imatge).setScale(.4).refreshBody();;
 			bomb.setVelocity(0, 600);
 		}
 		else if(pos < 3){
-			bomb = this.bombs.create(468, 0, 'bomb');
+			bomb = this.bombs.create(468, 0, imatge).setScale(.4).refreshBody();;
 			bomb.setVelocity(0, 200);
 		}
 		else{
-			bomb = this.bombs.create(596, 0, 'bomb');
+			bomb = this.bombs.create(596, 0, imatge).setScale(.4).refreshBody();;
 			bomb.setVelocity(0, 200);
 		}
 
