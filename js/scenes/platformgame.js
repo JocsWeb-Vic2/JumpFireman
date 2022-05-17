@@ -95,7 +95,7 @@ class PlatformScene extends Phaser.Scene {
 		}
 		{
 			this.edificis = this.physics.add.group();
-			setTimeout(()=>this.createEdifici(), 63000);
+			setTimeout(()=>this.createEdifici(), 5000);
 
 		}
 			this.cotxes = this.physics.add.group(); // Grup d'enemics
@@ -308,6 +308,7 @@ class PlatformScene extends Phaser.Scene {
 	}
 	hitEdifici(player, edifici){
 		edifici.disableBody(true, true);
+		loadpage("../html/platform2.html");
 	}
 }
 
