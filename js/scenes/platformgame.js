@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 class PlatformScene extends Phaser.Scene {
     constructor (){
         super('PlatformScene');
@@ -17,6 +19,8 @@ class PlatformScene extends Phaser.Scene {
 		this.kilometres = 0;
 		this.kilometresText;
 		this.comptador = 1;
+		this.pausat = false;
+
 
 		this.bombs = null;
 		this.balles = null;
@@ -26,7 +30,7 @@ class PlatformScene extends Phaser.Scene {
 
 		this.gameOver = false;
     }
-    preload (){	
+    preload (){
 		//this.load.image('sky', '../resources/starsassets/carretera.png');
 		this.load.image('ground', '../resources/starsassets/platform.png');
 		this.load.image('star', '../resources/starsassets/star.png');
@@ -43,7 +47,7 @@ class PlatformScene extends Phaser.Scene {
 		this.load.image('cotxe4', '../resources/starsassets/cotxe4.png');
 		this.load.image('cotxe5', '../resources/starsassets/cotxe5.png');
 		this.load.image('cotxe6', '../resources/starsassets/cotxe6.png');
-		
+
 		this.load.spritesheet('dude',
 			'../resources/starsassets/camio.png',
 			{ frameWidth: 77, frameHeight: 175 }
@@ -54,7 +58,7 @@ class PlatformScene extends Phaser.Scene {
 		//	{ frameWidth: 1033, frameHeight: 821 }
 		//);
 	}
-    create (){	
+    create (){
 		//this.add.image(400, 300, 'sky');
 		//this.add.image(400, 300, 'fons');
 		{	// Creem platafomres
@@ -75,7 +79,16 @@ class PlatformScene extends Phaser.Scene {
 			//this.player.setBounce(0.2);
 			//this.player = this.physics.add.staticGroup();
 			this.player.setCollideWorldBounds(true);
-			
+
+			var button_pause = this.add.text(400, 550, 'Pause') //el botó de save game, que és un text que sàctiva al clickar a sobre.
+				.setOrigin(0.5)
+				.setPadding(10)
+				.setStyle({ backgroundColor: '#111' })
+				.setInteractive({ useHandCursor: true })
+				.on('pointerdown', ()=>{
+					this.pausat = true;
+				});
+
 			this.anims.create({
 				key: 'left',
 				frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 1 }),
@@ -122,31 +135,31 @@ class PlatformScene extends Phaser.Scene {
 			this.physics.add.collider(this.player, this.platforms);
 			//this.physics.add.collider(this.stars, this.platforms);
 			this.cursors = this.input.keyboard.createCursorKeys();
-			this.physics.add.overlap(this.player, this.gasolines, 
+			this.physics.add.overlap(this.player, this.gasolines,
 				(body1, body2)=>this.collectGasolina(body1, body2));
 			this.physics.add.collider(this.bombs, this.platforms);
-			this.physics.add.collider(this.player, this.bombs, 
+			this.physics.add.collider(this.player, this.bombs,
 				(body1, body2)=>this.hitBomb(body1, body2));
 			//JUGADOR AMB BALLES
-			this.physics.add.collider(this.player, this.balles, 
+			this.physics.add.collider(this.player, this.balles,
 				(body1, body2)=>this.hitBomb(body1, body2));
 			//BOMBES(cotxes) AMB BALLES
-			this.physics.add.collider(this.bombs, this.balles, 
+			this.physics.add.collider(this.bombs, this.balles,
 				(body1, body2)=>this.hitBallaBomb(body1, body2));
 			//JUGADOR AMB BASSALS
-			this.physics.add.collider(this.player, this.bassals, 
+			this.physics.add.collider(this.player, this.bassals,
 				(body1, body2)=>this.hitJugBassal(body1, body2));
 		}
 		{ // UI
-			this.scoreText = this.add.text(16, 16, 'Gasolina: 100', 
+			this.scoreText = this.add.text(16, 16, 'Gasolina: 100',
 				{ fontSize: '32px', fill: '#000' });
-			this.kilometresText = this.add.text(16, 50, 'Metres: 0', 
+			this.kilometresText = this.add.text(16, 50, 'Metres: 0',
 				{ fontSize: '32px', fill: '#000' });
 
 			this.afegirKilometres();
 		}
 	}
-	update (){	
+	update (){
 		if (this.gameOver) return;
 		{ // Moviment
 			if (this.cursors.left.isDown){
@@ -180,6 +193,11 @@ class PlatformScene extends Phaser.Scene {
 			}
 			if(this.newfons.y == 650){
 				this.newfons.y = 0;
+			}
+			if(this.pausat === true){
+				this.scene.pause();
+				this.scene.launch('escena_pausa');
+				this.pausat = false;
 			}
 		}
 	}
@@ -273,8 +291,9 @@ class PlatformScene extends Phaser.Scene {
         //bomb.setCollideWorldBounds(true);
 		setTimeout(()=>this.createBomb(), 2000);
 	}
+
 	hitBomb(player, bomb){
-		if (this.gameOver) 
+		if (this.gameOver)
 			return;
 		this.physics.pause();
 		this.player.setTint(0xff0000);
@@ -297,7 +316,7 @@ class PlatformScene extends Phaser.Scene {
 		this.player.setVelocityY(300);
 	}
 	enableAllStars(){
-		this.stars.children.iterate(child => 
+		this.stars.children.iterate(child =>
 			child.enableBody(true, child.x, 0, true, true));
 	}
 	afegirKilometres(){
@@ -308,3 +327,32 @@ class PlatformScene extends Phaser.Scene {
 	}
 }
 
+var escena_pausa = new Phaser.Class({
+
+	Extends: Phaser.Scene,
+
+	initialize:
+
+		function escena_pausa ()
+		{
+			Phaser.Scene.call(this, { key: 'escena_pausa' });
+		},
+
+	preload: function ()
+	{
+		this.load.image('mitsu', '../resources/starsassets/evo.jpg');
+	},
+
+	create: function ()
+	{
+		this.fondo = this.add.image(400, 300, 'mitsu').setAlpha(0.5);
+
+		this.input.once('pointerdown', function () {
+
+			this.scene.resume('PlatformScene');
+			this.fondo.destroy();
+
+		}, this);
+	}
+
+});

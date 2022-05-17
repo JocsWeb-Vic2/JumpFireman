@@ -10,7 +10,7 @@ var config = {
 			debug: false
 		}
 	},
-    scene: [ PlatformScene ]
+    scene: [ PlatformScene, escena_pausa ]
 };
 
 var game = new Phaser.Game(config);
