@@ -18,7 +18,7 @@ class PlatformScene extends Phaser.Scene {
 		this.kilometresText;
 		this.comptador = 1;
 
-		this.bombs = null;
+		this.cotxes = null;
 		this.balles = null;
 		this.bassals = null;
 		this.lliscar = false;
@@ -48,27 +48,12 @@ class PlatformScene extends Phaser.Scene {
 			'../resources/starsassets/camio.png',
 			{ frameWidth: 77, frameHeight: 175 }
 		);
-
-		//this.load.spritesheet('fons',
-		//	'../resources/starsassets/fons.png',
-		//	{ frameWidth: 1033, frameHeight: 821 }
-		//);
 	}
     create (){	
-		//this.add.image(400, 300, 'sky');
-		//this.add.image(400, 300, 'fons');
-		{	// Creem platafomres
-			this.platforms = this.physics.add.staticGroup();
-			//this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-			//this.platforms.create(600, 400, 'ground');
-			//this.platforms.create(50, 250, 'ground');
-			//this.platforms.create(750, 220, 'ground');
-		}
 		{
 			this.fons = this.physics.add.group();
 			this.newfons = this.fons.create(400, 250, 'fons');
 			this.newfons.setVelocityY(300);
-			//this.createFons();
 		}
 		{	// Creem player i definim animacions
 			this.player = this.physics.add.sprite(468, 550, 'dude');
@@ -96,15 +81,6 @@ class PlatformScene extends Phaser.Scene {
 				repeat: -1
 			});
 		}
-		{	// Creem objectes interactuables
-			//this.stars = this.physics.add.group({
-			//	key: 'star',
-			//	repeat: 11,
-			//	setXY: { x: 12, y: 0, stepX: 70 }
-			//});
-			//this.stars.children.iterate((child) => 
-			//	child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)));
-		}
 		{
 			this.balles = this.physics.add.group();
 			setTimeout(()=>this.createBalla(), 10000);
@@ -116,26 +92,29 @@ class PlatformScene extends Phaser.Scene {
 			setTimeout(()=>this.createGasolina(), 32000);
 			setTimeout(()=>this.reduirGasolina(), 2000);
 		}
-			this.bombs = this.physics.add.group(); // Grup d'enemics
-			setTimeout(()=>this.createBomb(), 1000);
+			this.cotxes = this.physics.add.group(); // Grup d'enemics
+			setTimeout(()=>this.createCotxe(), 1000);
 		{	// Definim les col·lisions i interaccions
 			this.physics.add.collider(this.player, this.platforms);
 			//this.physics.add.collider(this.stars, this.platforms);
 			this.cursors = this.input.keyboard.createCursorKeys();
 			this.physics.add.overlap(this.player, this.gasolines, 
 				(body1, body2)=>this.collectGasolina(body1, body2));
-			this.physics.add.collider(this.bombs, this.platforms);
-			this.physics.add.collider(this.player, this.bombs, 
-				(body1, body2)=>this.hitBomb(body1, body2));
+			this.physics.add.collider(this.cotxes, this.platforms);
+			this.physics.add.collider(this.player, this.cotxes, 
+				(body1, body2)=>this.hitCotxe(body1, body2));
 			//JUGADOR AMB BALLES
 			this.physics.add.collider(this.player, this.balles, 
-				(body1, body2)=>this.hitBomb(body1, body2));
-			//BOMBES(cotxes) AMB BALLES
-			this.physics.add.collider(this.bombs, this.balles, 
-				(body1, body2)=>this.hitBallaBomb(body1, body2));
+				(body1, body2)=>this.hitCotxe(body1, body2));
+			//COTXES AMB BALLES
+			this.physics.add.collider(this.cotxes, this.balles, 
+				(body1, body2)=>this.hitBallaCotxe(body1, body2));
 			//JUGADOR AMB BASSALS
 			this.physics.add.collider(this.player, this.bassals, 
 				(body1, body2)=>this.hitJugBassal(body1, body2));
+			//BASSALS AMB COTXES
+			this.physics.add.collider(this.cotxes, this.bassals, 
+				(body1, body2)=>this.hitCotxeBassal(body1, body2));
 		}
 		{ // UI
 			this.scoreText = this.add.text(16, 16, 'Gasolina: 100', 
@@ -197,7 +176,7 @@ class PlatformScene extends Phaser.Scene {
 			this.scoreText.setText('Gasolina: ' + this.score);
 		}
 		else{
-			this.hitBomb(null, null);
+			this.hitCotxe(null, null);
 		}
 	}
 	createFons(){
@@ -232,11 +211,11 @@ class PlatformScene extends Phaser.Scene {
 		gasolina.setVelocity(0, 300);
 		setTimeout(()=>this.createGasolina(), 30000);
 	}
-	createBomb(){
+	createCotxe(){
 		var pos = Phaser.Math.Between(0, 3);
 		var randomimatge = Phaser.Math.Between(0, 2);
 		var imatge;
-		var bomb;
+		var cotxe;
 		if(pos < 2){
 			if(randomimatge == 0) imatge = 'cotxe1';
 			else if(randomimatge == 1) imatge = 'cotxe2';
@@ -250,30 +229,25 @@ class PlatformScene extends Phaser.Scene {
 
 
 		if(pos < 1){
-			bomb = this.bombs.create(214, 0, imatge).setScale(.4).refreshBody();;
-			bomb.setVelocity(0, 600);
+			cotxe = this.cotxes.create(214, 0, imatge).setScale(.4).refreshBody();;
+			cotxe.setVelocity(0, 600);
 		}
 		else if(pos < 2){
-			bomb = this.bombs.create(341, 0, imatge).setScale(.4).refreshBody();;
-			bomb.setVelocity(0, 600);
+			cotxe = this.cotxes.create(341, 0, imatge).setScale(.4).refreshBody();;
+			cotxe.setVelocity(0, 600);
 		}
 		else if(pos < 3){
-			bomb = this.bombs.create(468, 0, imatge).setScale(.4).refreshBody();;
-			bomb.setVelocity(0, 200);
+			cotxe = this.cotxes.create(468, 0, imatge).setScale(.4).refreshBody();;
+			cotxe.setVelocity(0, 200);
 		}
 		else{
-			bomb = this.bombs.create(596, 0, imatge).setScale(.4).refreshBody();;
-			bomb.setVelocity(0, 200);
+			cotxe = this.cotxes.create(596, 0, imatge).setScale(.4).refreshBody();;
+			cotxe.setVelocity(0, 200);
 		}
 
-
-		//var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-        //var bomb = this.bombs.create(x, 16, 'bomb');
-        //bomb.setBounce(1);
-        //bomb.setCollideWorldBounds(true);
-		setTimeout(()=>this.createBomb(), 2000);
+		setTimeout(()=>this.createCotxe(), 2000);
 	}
-	hitBomb(player, bomb){
+	hitCotxe(player, cotxe){
 		if (this.gameOver) 
 			return;
 		this.physics.pause();
@@ -282,9 +256,12 @@ class PlatformScene extends Phaser.Scene {
 		this.gameOver = true;
 		setTimeout(()=>loadpage("../"), 3000);
 	}
-	hitBallaBomb(balla, bomb){
+	hitBallaCotxe(balla, cotxe){
 		balla.setVelocityY(300);
-		bomb.setVelocityY(300);
+		cotxe.setVelocityY(300);
+	}
+	hitCotxeBassal(cotxe, bassal){
+		bassal.disableBody(true, true);
 	}
 	hitJugBassal(player, bassal){
 		this.lliscar = true;
