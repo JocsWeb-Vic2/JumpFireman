@@ -10,6 +10,10 @@ function platform_game(){
 	loadpage("./html/platform.html");
 }
 
+function platform2_game(){
+	loadpage("./html/platform2.html");
+}
+
 function phaser_game(){
 	loadpage("./html/phasergame.html");
 }
