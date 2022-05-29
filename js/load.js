@@ -1,3 +1,4 @@
+
 var load_obj = function(){
 	var vue_instance = new Vue({
 		el: "#saves_id",
@@ -6,8 +7,8 @@ var load_obj = function(){
 		},
 		created: function(){
 			let arrayPartides = [];
-			if(localStorage.partides){
-				arrayPartides = JSON.parse(localStorage.partides);
+			if(localStorage.sav2){
+				arrayPartides = JSON.parse(localStorage.sav2);
 				if(!Array.isArray(arrayPartides)) arrayPartides = [];
 			}
 			this.saves = arrayPartides;
@@ -15,10 +16,9 @@ var load_obj = function(){
 		methods: { 
 			load: function(i){
 				sessionStorage.idPartida = i;
-				loadpage("../html/game.html");
+				loadpage("../html/platform.html");
 			}
 		}
 	});
 	return {}; 
 }();
-

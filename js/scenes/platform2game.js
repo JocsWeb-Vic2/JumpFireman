@@ -116,6 +116,15 @@ class Platform2Scene extends Phaser.Scene {
 			this.enableAllStars();
 			this.createBomb();
 		}
+
+        let arrayPartides = [];
+		if(localStorage.sav){
+			arrayPartides = JSON.parse(localStorage.sav);
+			if(!Array.isArray(arrayPartides)) arrayPartides = [];
+		}
+
+		loadpage("../html/platform.html");
+
 	}
 	createBomb(){
 		var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
@@ -138,4 +147,6 @@ class Platform2Scene extends Phaser.Scene {
 			child.enableBody(true, child.x, 0, true, true));
 	}
 }
+
+
 

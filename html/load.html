@@ -3,20 +3,18 @@
 	<head>
 		<link rel="stylesheet" href="../styles/main.css">
 		<script src="../js/loader.js"></script>
-		<title> My first game - Load </title>
+		<title> Load Classic </title>
 	</head>
 	<body>
 		<div id="saves_id">
-			<p class="menu-object" id="title">Save files</p>
+			<h1 class="neon">Save <br> Files </h1>
 			<div v-for="(save, indx) in saves">
-				<button class="menu-object" v-on:click="load(indx)"> 
-					{{save.username}} 
-				</button>
+				<div class="button" v-on:click="load(indx)">
+					{{indx}}
+				</div>
 			</div>
 		</div>
-		<a class="menu-object" href="../">GoToMenu</a>
 	</body>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 	<script src="../js/load.js"></script>
 </html>
-
