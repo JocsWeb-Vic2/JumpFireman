@@ -99,7 +99,7 @@ class PlatformScene extends Phaser.Scene {
 			//this.player = this.physics.add.staticGroup();
 			this.player.setCollideWorldBounds(true);
 
-			var button_pause = this.add.text(400, 550, 'Pause') //el botó de save game, que és un text que s'activa al clickar a sobre.
+			var button_pause = this.add.text(400, 550, 'Pause') //el botó de pause game, que és un text que s'activa al clickar a sobre.
 				.setOrigin(0.5)
 				.setPadding(10)
 				.setStyle({ backgroundColor: '#111' })
@@ -141,7 +141,7 @@ class PlatformScene extends Phaser.Scene {
 		}
 		{
 			this.edificis = this.physics.add.group();
-			setTimeout(()=>this.createEdifici(), 5000);
+			setTimeout(()=>this.createEdifici(), 50000); //es crea edifici als 50 segons
 
 		}
 			this.cotxes = this.physics.add.group(); // Grup d'enemics
@@ -224,7 +224,7 @@ class PlatformScene extends Phaser.Scene {
 			if(this.newfons.y == 650){
 				this.newfons.y = 0;
 			}
-			if(pausat === 0){
+			if(pausat === 0){ //si hem pausat es para l'escena i llançem la de pausa
 				this.scene.pause();
 				this.scene.launch('escena_pausa');
 				
@@ -244,7 +244,7 @@ class PlatformScene extends Phaser.Scene {
 	  if(pausat === -1){	
 		if(this.score > 0){
 			this.score -= 1;
-			setTimeout(()=>this.reduirGasolina(), 800*this.comptador);
+			setTimeout(()=>this.reduirGasolina(), 800*this.comptador); //reduim cada vegada més la gasolina
 			this.scoreText.setText('Gasolina: ' + this.score);
 		}
 		else{
@@ -263,7 +263,7 @@ class PlatformScene extends Phaser.Scene {
 		var posX = 596;
 		if(pos < 1) posX = 214;
 		else if(pos < 2) posX = 341;
-		else if(pos < 3) posX = 468;
+		else if(pos < 3) posX = 468;//per a no crear una tanca en el mateix lloc on haviem creat una
 
 		balla = this.balles.create(posX, 0, 'balla').setScale(.65).refreshBody();
 		balla.setVelocity(0, 300);
@@ -411,13 +411,13 @@ var escena_pausa = new Phaser.Class({
 
 	preload: function ()
 	{
-		this.load.image('mitsu', '../resources/starsassets/click.png');
+		this.load.image('fons_pausa', '../resources/starsassets/click.png');
 	},
 
 	create: function ()
 	{
-		this.fondo = this.add.image(400, 300, 'mitsu').setAlpha(1);
-		var button_pause = this.add.text(400, 550, 'Save') //el botó de save game, que és un text que s'activa al clickar a sobre.
+		this.fondo = this.add.image(400, 300, 'fons_pausa').setAlpha(1);
+		var button_save = this.add.text(400, 550, 'Save') //el botó de save game, que és un text que s'activa al clickar a sobre.
 				.setOrigin(0.5)
 				.setPadding(10)
 				.setStyle({ backgroundColor: '#111' })
@@ -427,29 +427,28 @@ var escena_pausa = new Phaser.Class({
 					let guardar = {
 						gasolina :escena_principal.score,
 						km :escena_principal.kilometres
-							  };
+							  };//guardem els atributs que ens interessa
 					let array_saves = [];
-					if (localStorage.sav2){
+					if (localStorage.sav2){ //si ja hi havia alguna partida guardada s'ha de recuperar la array i guardar la nova partida en ella
 						array_saves = JSON.parse(localStorage.sav2);
 						if(!Array.isArray(array_saves)) array_saves = [];
 					}
-					array_saves.push(guardar);
+					array_saves.push(guardar);//guardem
 					localStorage.sav2 = JSON.stringify(array_saves);
-					loadpage("../index.html");
+					loadpage("../index.html");//retornem al index.html
 			
 				});
 
 		this.input.once('pointerdown', function () {
 
-			pausat = -1;
-			var escena_principal = this.scene.get('PlatformScene')
+			pausat = -1; //ara podem tornar a executar els mètodes de creació
+			var escena_principal = this.scene.get('PlatformScene') //agafem escena principal del joc
 			escena_principal.reduirGasolina();
 			escena_principal.afegirKilometres();
-			escena_principal.createCotxe();
-			escena_principal.createBassal();
+			escena_principal.createCotxe();//executem pq es redueixi gasolina, augmentin kilometres i apareixin cotxes de nou.
 			this.scene.resume('PlatformScene');
 			this.fondo.destroy();
-			button_pause.destroy();
+			button_save.destroy(); //destruim boto de save i la imatge de fons
 
 		}, this);
 	}

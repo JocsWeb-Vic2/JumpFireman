@@ -11,6 +11,11 @@ input[type=number]{
 	line-height: 75px;
 }
 
+body{
+	background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(47,72,88,1) 100%);
+}
+
+
 .menu-object{
 	display:block;
 	margin-left: auto;
@@ -21,9 +26,9 @@ input[type=number]{
 	margin-top: 10px;
 }
 
-p{
+/*p{
 	text-align: center;
-}
+}*/
 
 button.menu-object:active{
 	font-size: 18px;
@@ -37,3 +42,108 @@ button.menu-object:hover:not(:active){
 	height: 85px;
 }
 
+
+body{
+    background-image: url("/resources/starsassets/carretera2.png");
+}
+
+div{
+    color: white;
+    text-transform: uppercase;
+    font-family: Arial Black;
+    
+    background: linear-gradient(#616161, #464646);
+    border: 10px solid #ffbf5f;
+    
+    width: 800px;
+    padding: 40px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 0px;
+}
+
+
+
+
+
+/*#aquicomença*/
+
+
+.container {
+	margin: 50px;
+	display: block;
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+  }
+  
+  .pixel2 {
+	font-size: 25px;
+	color: white;
+	height: auto;
+	margin: 10px;
+	font-family: 'VT323';
+	
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	text-transform: uppercase;
+	
+	cursor: pointer;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  }
+  
+  .pixel2:active {
+	top: 2px;
+  }
+  
+  .pixel2 {
+	position: relative;
+	display: block;
+	margin: 10px;
+	margin-bottom: 30px;
+	font-family: 'VT323';
+	text-transform: uppercase;
+	
+	font-size: 25px;
+	color: white;
+  }
+  
+  .pixel2::before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: -10px;
+	right: -10px;
+	background: black;
+	z-index: -1;
+  }
+  
+  .pixel2::after {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 4px;
+	bottom: 4px;
+	left: -6px;
+	right: -6px;
+	background: black;
+	z-index: -1;
+  }
+  
+  .pixel2 {
+	padding: 10px 10px;
+	position: relative;
+	background: black;
+	width: auto;
+	z-index: 2;
+  }
