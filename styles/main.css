@@ -65,10 +65,6 @@ div{
 
 
 
-
-/*#aquicomença*/
-
-
 .container {
 	margin: 50px;
 	display: block;
@@ -147,3 +143,28 @@ div{
 	width: auto;
 	z-index: 2;
   }
+
+#Logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#Logo:hover{
+    animation: animacioFoc 1s linear reverse infinite;
+}
+
+@keyframes animacioFoc {
+    /*0% {transform: scale(1);}
+    50% {transform: scale(.5);}
+    100% {transform: scale(1);}*/
+
+    10% {transform: scaleX(1);}
+    40% {transform: scaleX(-1)}
+    60% {transform: scaleX(-1)}
+    90% {transform: scaleX(1)}
+}
+
+svg{
+	align:left;
+}
