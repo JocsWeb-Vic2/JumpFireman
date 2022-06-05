@@ -14,7 +14,7 @@ class Platform2Scene extends Phaser.Scene {
 		this.scoreText;
 		this.bombs = null;
 		this.gameOver = false;
-		this.newfons = null;
+		
     }
     preload (){
 		this.load.image('sky', '../resources/starsassets/fons.png');
@@ -29,27 +29,54 @@ class Platform2Scene extends Phaser.Scene {
 	}
     create (){
 
-
+		this.add.image(400,300,'sky');
 		{	// Creem platafomress
 
-      this.fons = this.physics.add.group();
-			this.newfons = this.fons.create(400, 250, 'sky');
-			this.newfons.setVelocityY(300);
-
+			
 			this.platforms = this.physics.add.staticGroup();
-      this.platforms.create(0, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+     		this.platforms.create(0, 600, 'ground').setScale(0.2, 0.1).refreshBody();
 			this.platforms.create(200, 600, 'ground').setScale(0.2, 0.1).refreshBody();
 			this.platforms.create(400, 600, 'ground').setScale(0.2, 0.1).refreshBody();
 			this.platforms.create(600, 600, 'ground').setScale(0.2, 0.1).refreshBody();
 			this.platforms.create(800, 600, 'ground').setScale(0.2, 0.1).refreshBody();
+			
+			this.platforms.create(0, 500, 'ground').setScale(0.1, 0.05).refreshBody();
+			this.platforms.create(200, 500, 'ground').setScale(0.1, 0.05).refreshBody();
+			this.platforms.create(300, 500, 'ground').setScale(0.1, 0.05).refreshBody();
+			this.platforms.create(500, 500, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(600, 500, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(700, 500, 'ground').setScale(0.2, 0.05).refreshBody();
 
-			this.Levelplatforms = this.physics.add.staticGroup();
-			this.Levelplatforms.create(200, 200, 'ground').setScale(0.1, 0.075).refreshBody();
-			this.Levelplatforms.create(400, 300, 'ground').setScale(0.1, 0.075).refreshBody();
-			this.Levelplatforms.create(600, 400, 'ground').setScale(0.1, 0.075).refreshBody();
-			this.Levelplatforms.create(800, 500, 'ground').setScale(0.1, 0.075).refreshBody();
+			
+			this.platforms.create(50, 400, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(300, 400, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(400, 400, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(500, 400, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(800, 400, 'ground').setScale(0.2, 0.05).refreshBody();
+
+
+			this.platforms.create(150, 300, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(400, 300, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(500, 300, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(700, 300, 'ground').setScale(0.2, 0.05).refreshBody();
+
+			this.platforms.create(100, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(300, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(500, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(700, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(950, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+
+
+
+			
+
+			this.platforms.create(0, 300, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(0, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(0, 100, 'ground').setScale(0.2, 0.05).refreshBody();
+			
 
 		}
+		
 
 
 		{	// Creem player i definim animacions
@@ -90,7 +117,7 @@ class Platform2Scene extends Phaser.Scene {
 		{	// Creem objectes interactuables
 			this.stars = this.physics.add.group({
 				key: 'star',
-				repeat: 11,
+				repeat: 0,
 				setXY: { x: 12, y: 0, stepX: 70 }
 			});
 			this.stars.children.iterate((child) =>
@@ -100,6 +127,9 @@ class Platform2Scene extends Phaser.Scene {
 
 			this.bombs = this.physics.add.group(); // Grup d'enemics
 			this.createBomb();
+			this.createBomb();
+			this.createBomb();
+
 		{	// Definim les col·lisions i interaccions
 			this.physics.add.collider(this.player, this.platforms);
 			this.physics.add.collider(this.stars, this.platforms);
@@ -138,9 +168,7 @@ class Platform2Scene extends Phaser.Scene {
 				this.player.setVelocityY(-330);
 			}
 
-			if(this.newfons.y == 650){
-				this.newfons.y = 0;
-			}
+		
 
       if(pausat === 0){ //si hem pausat es para l'escena i llançem la de pausa
 				this.scene.pause();
@@ -187,3 +215,59 @@ class Platform2Scene extends Phaser.Scene {
 	}
 
 }
+var escena_pausa = new Phaser.Class({
+
+	Extends: Phaser.Scene,
+
+	initialize:
+
+		function escena_pausa ()
+		{
+			Phaser.Scene.call(this, { key: 'escena_pausa' });
+		},
+
+	preload: function ()
+	{
+		this.load.image('fons_pausa', '../resources/starsassets/click.png');
+	},
+
+	create: function ()
+	{
+		this.fondo = this.add.image(400, 300, 'fons_pausa').setAlpha(1);
+		var button_save = this.add.text(400, 550, 'Save') //el botó de save game, que és un text que s'activa al clickar a sobre.
+				.setOrigin(0.5)
+				.setPadding(10)
+				.setStyle({ backgroundColor: '#111' })
+				.setInteractive({ useHandCursor: true })
+				.on('pointerdown', ()=>{
+					var escena_principal = this.scene.get('PlatformScene')
+					let guardar = {
+						gasolina :escena_principal.score,
+						km :escena_principal.kilometres
+							  };//guardem els atributs que ens interessa
+					let array_saves = [];
+					if (localStorage.sav2){ //si ja hi havia alguna partida guardada s'ha de recuperar la array i guardar la nova partida en ella
+						array_saves = JSON.parse(localStorage.sav2);
+						if(!Array.isArray(array_saves)) array_saves = [];
+					}
+					array_saves.push(guardar);//guardem
+					localStorage.sav2 = JSON.stringify(array_saves);
+					loadpage("../index.html");//retornem al index.html
+			
+				});
+
+		this.input.once('pointerdown', function () {
+
+			pausat = -1; //ara podem tornar a executar els mètodes de creació
+			var escena_principal = this.scene.get('PlatformScene') //agafem escena principal del joc
+			escena_principal.reduirGasolina();
+			escena_principal.afegirKilometres();
+			escena_principal.createCotxe();//executem pq es redueixi gasolina, augmentin kilometres i apareixin cotxes de nou.
+			this.scene.resume('PlatformScene');
+			this.fondo.destroy();
+			button_save.destroy(); //destruim boto de save i la imatge de fons
+
+		}, this);
+	}
+
+});
