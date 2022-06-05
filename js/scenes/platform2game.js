@@ -63,8 +63,8 @@ class Platform2Scene extends Phaser.Scene {
 			this.platforms.create(100, 200, 'ground').setScale(0.2, 0.05).refreshBody();
 			this.platforms.create(300, 200, 'ground').setScale(0.2, 0.05).refreshBody();
 			this.platforms.create(500, 200, 'ground').setScale(0.2, 0.05).refreshBody();
-			this.platforms.create(700, 200, 'ground').setScale(0.2, 0.05).refreshBody();
-			this.platforms.create(950, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+			this.platforms.create(650, 200, 'ground').setScale(0.2, 0.05).refreshBody();
+
 
 
 
@@ -84,14 +84,7 @@ class Platform2Scene extends Phaser.Scene {
 			this.player.setBounce(0.2);
 			this.player.setCollideWorldBounds(true);
 
-      var button_pause = this.add.text(400, 550, 'Pause') //el botó de pause game, que és un text que s'activa al clickar a sobre.
-				.setOrigin(0.5)
-				.setPadding(10)
-				.setStyle({ backgroundColor: '#111' })
-				.setInteractive({ useHandCursor: true })
-				.on('pointerdown', ()=>{
-					pausat = 0;
-				});
+
 
 			this.anims.create({
 				key: 'left',
@@ -170,10 +163,7 @@ class Platform2Scene extends Phaser.Scene {
 
 		
 
-      if(pausat === 0){ //si hem pausat es para l'escena i llançem la de pausa
-				this.scene.pause();
-				this.scene.launch('escena_pausa');
-			}
+      
 		}
 	}
 	collectStar(player, star){
@@ -184,6 +174,14 @@ class Platform2Scene extends Phaser.Scene {
 			this.enableAllStars();
 			this.createBomb();
 		}
+		let arrayPartides = [];
+		if(localStorage.sav){
+			arrayPartides = JSON.parse(localStorage.sav);
+			if(!Array.isArray(arrayPartides)) arrayPartides = [];
+		}
+
+		loadpage("../html/platform.html");
+
 	}
 	createBomb(){
 		var x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
@@ -215,59 +213,3 @@ class Platform2Scene extends Phaser.Scene {
 	}
 
 }
-var escena_pausa = new Phaser.Class({
-
-	Extends: Phaser.Scene,
-
-	initialize:
-
-		function escena_pausa ()
-		{
-			Phaser.Scene.call(this, { key: 'escena_pausa' });
-		},
-
-	preload: function ()
-	{
-		this.load.image('fons_pausa', '../resources/starsassets/click.png');
-	},
-
-	create: function ()
-	{
-		this.fondo = this.add.image(400, 300, 'fons_pausa').setAlpha(1);
-		var button_save = this.add.text(400, 550, 'Save') //el botó de save game, que és un text que s'activa al clickar a sobre.
-				.setOrigin(0.5)
-				.setPadding(10)
-				.setStyle({ backgroundColor: '#111' })
-				.setInteractive({ useHandCursor: true })
-				.on('pointerdown', ()=>{
-					var escena_principal = this.scene.get('PlatformScene')
-					let guardar = {
-						gasolina :escena_principal.score,
-						km :escena_principal.kilometres
-							  };//guardem els atributs que ens interessa
-					let array_saves = [];
-					if (localStorage.sav2){ //si ja hi havia alguna partida guardada s'ha de recuperar la array i guardar la nova partida en ella
-						array_saves = JSON.parse(localStorage.sav2);
-						if(!Array.isArray(array_saves)) array_saves = [];
-					}
-					array_saves.push(guardar);//guardem
-					localStorage.sav2 = JSON.stringify(array_saves);
-					loadpage("../index.html");//retornem al index.html
-			
-				});
-
-		this.input.once('pointerdown', function () {
-
-			pausat = -1; //ara podem tornar a executar els mètodes de creació
-			var escena_principal = this.scene.get('PlatformScene') //agafem escena principal del joc
-			escena_principal.reduirGasolina();
-			escena_principal.afegirKilometres();
-			escena_principal.createCotxe();//executem pq es redueixi gasolina, augmentin kilometres i apareixin cotxes de nou.
-			this.scene.resume('PlatformScene');
-			this.fondo.destroy();
-			button_save.destroy(); //destruim boto de save i la imatge de fons
-
-		}, this);
-	}
-
-});

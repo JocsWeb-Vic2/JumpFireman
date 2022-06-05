@@ -45,6 +45,7 @@ class PlatformScene extends Phaser.Scene {
 		  this.bassals = null;
 		  this.edificis = null;
 		  this.lliscar = false;
+		  
 
 		  this.gameOver = false;
 		  //si venim d'un save carreguem kilometres i gasolina, sinó donem valor per defecte
@@ -52,12 +53,14 @@ class PlatformScene extends Phaser.Scene {
 
 			this.kilometres = partida.km;
 			this.score = partida.gasolina;
+			this.numEdificis = partida.numEdificis;
 
 		  }
 		  else{
 
 			this.kilometres = 0;
 			this.score = 100;
+			this.numEdificis = 0;
 		  }
 		
     }
@@ -106,6 +109,7 @@ class PlatformScene extends Phaser.Scene {
 				.setInteractive({ useHandCursor: true })
 				.on('pointerdown', ()=>{
 					pausat = 0;
+					
 				});
 
 			this.anims.create({
@@ -141,7 +145,7 @@ class PlatformScene extends Phaser.Scene {
 		}
 		{
 			this.edificis = this.physics.add.group();
-			setTimeout(()=>this.createEdifici(), 50000); //es crea edifici als 50 segons
+			setTimeout(()=>this.createEdifici(), 60000); //es crea edifici als 60 segons
 
 		}
 			this.cotxes = this.physics.add.group(); // Grup d'enemics
@@ -386,13 +390,19 @@ class PlatformScene extends Phaser.Scene {
 	}
 	hitEdifici(player, edifici){
 		edifici.disableBody(true, true);
+		this.numEdificis+=1;
+
 		let guardar = {
 			gasolina :this.score,
-			km :this.kilometres
+			km :this.kilometres,
+			numEdificis: this.numEdificis
 				  };
-		localStorage.sav = JSON.stringify(guardar);
-		loadpage("../html/platform2.html");
 
+		localStorage.sav = JSON.stringify(guardar);
+		if(this.numEdificis < 2)
+			loadpage("../html/platform2.html");
+		else
+			loadpage("../html/youwin.html")		  
 	}
 
 
@@ -426,7 +436,8 @@ var escena_pausa = new Phaser.Class({
 					var escena_principal = this.scene.get('PlatformScene')
 					let guardar = {
 						gasolina :escena_principal.score,
-						km :escena_principal.kilometres
+						km :escena_principal.kilometres,
+						numEdificis: escena_principal.numEdificis
 							  };//guardem els atributs que ens interessa
 					let array_saves = [];
 					if (localStorage.sav2){ //si ja hi havia alguna partida guardada s'ha de recuperar la array i guardar la nova partida en ella

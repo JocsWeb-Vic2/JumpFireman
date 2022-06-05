@@ -8,6 +8,10 @@ function platform2_game(){
 }
 
 
+function index(){
+	loadpage("../index.html");
+}
+
 function load(){
 	loadpage("./html/load.html");
 }
