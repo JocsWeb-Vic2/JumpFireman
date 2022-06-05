@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 900,
     height: 600,
     parent: 'game_area',
 	physics: {
@@ -10,7 +10,7 @@ var config = {
 			debug: false
 		}
 	},
-    scene: [ Platform2Scene ]
+    scene: [ Platform2Scene, escena_pausa ]
 };
 
 var game = new Phaser.Game(config);
