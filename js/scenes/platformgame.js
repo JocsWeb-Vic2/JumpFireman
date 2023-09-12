@@ -145,7 +145,7 @@ class PlatformScene extends Phaser.Scene {
 		}
 		{
 			this.edificis = this.physics.add.group();
-			setTimeout(()=>this.createEdifici(), 60000); //es crea edifici als 60 segons
+			setTimeout(()=>this.createEdifici(), 6000); //es crea edifici als 60 segons
 
 		}
 			this.cotxes = this.physics.add.group(); // Grup d'enemics
